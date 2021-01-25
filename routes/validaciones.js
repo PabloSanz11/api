@@ -12,7 +12,12 @@ validaciones.post("/register", async(req, res, next) => {
         const rows = await db.query(query);
 
         if (rows.affectedRows == 1) {
-            return res.status(201).json({ code: 201, message: "Usuario registrado correctamente" });
+            const token = jwt.sign({
+                idUser: rows[0].idUser,
+                email: rows[0].email
+            }, "debugkey");
+
+            return res.status(201).json({ code: 201, message: token });
         }
 
         return res.status(500).json({ code: 500, message: "El Usuario no ha sido registrado" });
