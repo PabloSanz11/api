@@ -1,8 +1,6 @@
-module.exports = (req, res, next) =>
-{
-    return data(
-    {
-        connectionLimit: 10,
+module.exports = (req, res, next) => {
+    return data({
+        connectionLimit: 100,
         host: 'us-cdbr-east-02.cleardb.com',
         user: 'bb2bf4809bb124',
         password: 'c29ea4b5',

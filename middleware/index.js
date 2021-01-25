@@ -1,4 +1,3 @@
-module.exports = (req, res, next) =>
-{
-    return res.status(200).json({code: 1, message: "Bienvenido al proyecto Final de Node"});
+module.exports = (req, res, next) => {
+    return res.status(200).json({ code: 1, message: "API REST UEmprendor" });
 }
