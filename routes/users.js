@@ -3,11 +3,11 @@ const users = express.Router();
 const db = require('../config/database');
 
 users.post("/", async(req, res, next) => {
-    const { name, lastName, gender, state, email, password, grade, progress } = req.body;
+    const { name, lastName, gender, state, birthdate, email, password, grade, progress } = req.body;
 
-    if (name && lastName && gender && state && email && grade && progress) {
-        let query = "INSERT INTO Users (name, lastName, gender, state, email, password, grade, progress)";
-        query += `VALUES ('${name}', '${lastName}', '${gender}', '${state}', '${email}', '${password}', '${grade}', ${progress} );`;
+    if (name && lastName && gender && state && birthdate && email && grade && progress) {
+        let query = "INSERT INTO Users (name, lastName, gender, state, birthdate, email, password, grade, progress)";
+        query += `VALUES ('${name}', '${lastName}', '${gender}', '${state}', '${birthdate}', '${email}', '${password}', '${grade}', ${progress} );`;
         const rows = await db.query(query);
 
         if (rows.affectedRows == 1) {
@@ -33,11 +33,19 @@ users.delete("/:id([0-9]{1,3})", async(req, res, next) => {
 });
 
 users.put("/:id([0-9]{1,3})", async(req, res, next) => {
-    const { name, lastName, gender, state, email, password, grade, progress } = req.body;
+    const { name, lastName, gender, state, birthdate, email, password, grade, progress } = req.body;
 
-    if (name && lastName && gender && state && email && password && grade && progress) {
-        let query = `UPDATE users SET name='${name}', lastName='${lastName}',`;
-        query += `gender='${gender}', state='${state}', email='${email}', password='${password}', grade='${grade}', progress='${progress}' WHERE idUser = ${req.params.id}`;
+    if (name && lastName && gender && state && birthdate && email && password && grade && progress) {
+        let query = `UPDATE users SET name = CASE WHEN '${name}' != '' THEN '${name}' ELSE name END,
+                            lastName= CASE WHEN '${lastName}' != '' THEN '${lastName}' ELSE lastName END,`;
+        query += `gender= CASE WHEN '${gender}' != '' THEN '${gender}' ELSE gender END, 
+                state = CASE WHEN '${state}' != '' THEN '${state}' ELSE state END,
+                birthdate = CASE WHEN '${birthdate}' != '' THEN '${birthdate}' ELSE birthdate END,
+                email = CASE WHEN '${email}' != '' THEN '${email}' ELSE email END,
+                password = CASE WHEN '${password}' != '' THEN '${password}' ELSE password END,
+                grade = CASE WHEN '${grade}' != '' THEN '${grade}' ELSE grade END,
+                progress = CASE WHEN '${progress}' != '' THEN '${progress}' ELSE progress END,
+                WHERE idUser = ${req.params.id}`;
 
         const rows = await db.query(query);
 
@@ -45,7 +53,7 @@ users.put("/:id([0-9]{1,3})", async(req, res, next) => {
             return res.status(200).json({ code: 200, message: "Usuario Actualizado correctamente" });
         }
 
-        return res.status(200).json({ code: 500, message: "Usuario NO Actualizado" });
+        return res.status(200).json({ code: 500, message: "Usuario no Actualizado" });
     }
 
     return res.status(200).json({ code: 500, message: "Campos incompletos" });
