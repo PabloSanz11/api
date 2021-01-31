@@ -4,26 +4,37 @@ const db = require('../config/database');
 const jwt = require('jsonwebtoken');
 
 validaciones.post("/register", async(req, res, next) => {
-    const { name, lastName, gender, state, email, password, grade, progress } = req.body;
+    const { name, lastName, gender, state, birthdate, email, password, grade, progress, nameCompany, descriptionCompany } = req.body;
 
-    if (name && lastName && gender && state && email && password && grade && progress) {
-        let query = "INSERT INTO Users (name, lastName, gender, state, email, password, grade, progress)";
-        query += `VALUES ('${name}', '${lastName}', '${gender}', '${state}', '${email}', '${password}', '${grade}', ${progress} );`;
+    if (name && lastName && gender && state && birthdate && email && password && grade && progress) {
+        let query = "INSERT INTO Users (name, lastName, gender, state, birthdate, email, password, grade, progress)";
+        query += `VALUES ('${name}', '${lastName}', '${gender}', '${state}', '${birthdate}', '${email}', '${password}', '${grade}', ${progress} );`;
         const rows = await db.query(query);
 
         if (rows.affectedRows == 1) {
-            const token = jwt.sign({
-                idUser: rows[0].idUser,
-                email: rows[0].email
-            }, "debugkey");
+            const query = `SELECT * FROM Users WHERE email = '${email}' AND password = '${password}';`;
+            const rows = await db.query(query);
 
-            return res.status(201).json({ code: 201, message: token });
+            if (rows.length == 1) {
+                const token = jwt.sign({
+                    idUser: rows[0].idUser,
+                    email: rows[0].email
+                }, "debugkey");
+
+                if (nameCompany && descriptionCompany) {
+                    let query = "INSERT INTO Companies (nameCompany, descriptionCompany, idUser)";
+                    query += `VALUES ('${nameCompany}', '${descriptionCompany}', ${rows[0].idUser} );`;
+                    const rowscompany = await db.query(query);
+                }
+
+                return res.status(201).json({ code: 201, message: token });
+            }
         }
 
-        return res.status(500).json({ code: 500, message: "El Usuario no ha sido registrado" });
+        return res.status(200).json({ code: 500, message: "El Usuario no ha sido registrado" });
     }
 
-    return res.status(500).json({ code: 500, message: "Campos incompletos" });
+    return res.status(200).json({ code: 500, message: "Campos incompletos" });
 });
 
 validaciones.post("/login", async(req, res, next) => {
@@ -45,7 +56,7 @@ validaciones.post("/login", async(req, res, next) => {
         }
     }
 
-    return res.status(200).json({ code: 500, message: "Campos incompletos" });
+    return res.status(201).json({ code: 500, message: "Campos incompletos" });
 });
 
 validaciones.post("/register-manager", async(req, res, next) => {
@@ -60,10 +71,10 @@ validaciones.post("/register-manager", async(req, res, next) => {
             return res.status(201).json({ code: 201, message: "Administrador registrado correctamente" });
         }
 
-        return res.status(500).json({ code: 500, message: "El Administrador no ha sido registrado" });
+        return res.status(200).json({ code: 500, message: "El Administrador no ha sido registrado" });
     }
 
-    return res.status(500).json({ code: 500, message: "Campos incompletos" });
+    return res.status(200).json({ code: 500, message: "Campos incompletos" });
 });
 
 validaciones.post("/login-manager", async(req, res, next) => {
