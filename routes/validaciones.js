@@ -21,7 +21,7 @@ validaciones.post("/register", async(req, res, next) => {
                     email: rows[0].email
                 }, "debugkey");
 
-                if (nameCompany && descriptionCompany) {
+                if (nameCompany != '' && descriptionCompany != '') {
                     let query = "INSERT INTO Companies (nameCompany, descriptionCompany, idUser)";
                     query += `VALUES ('${nameCompany}', '${descriptionCompany}', ${rows[0].idUser} );`;
                     const rowscompany = await db.query(query);
