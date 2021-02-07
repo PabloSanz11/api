@@ -6,6 +6,7 @@ const app = express();
 const validaciones = require('./routes/validaciones');
 const users = require('./routes/users');
 const notices = require('./routes/notices');
+const contacts = require('./routes/contacts');
 //Middleware
 const auth = require('./middleware/auth');
 const notFound = require('./middleware/notFound');
@@ -22,6 +23,7 @@ app.use("/validaciones", validaciones);
 app.use(auth);
 app.use("/users", users);
 app.use("/notices", notices);
+app.use("/contacts", contacts);
 app.use(notFound);
 
 app.listen(process.env.PORT || 3000, () => {
