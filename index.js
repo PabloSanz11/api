@@ -7,6 +7,7 @@ const validaciones = require('./routes/validaciones');
 const users = require('./routes/users');
 const notices = require('./routes/notices');
 const contacts = require('./routes/contacts');
+const flowcharts = require('./routes/flowcharts');
 //Middleware
 const auth = require('./middleware/auth');
 const notFound = require('./middleware/notFound');
@@ -24,6 +25,7 @@ app.use(auth);
 app.use("/users", users);
 app.use("/notices", notices);
 app.use("/contacts", contacts);
+app.use("/flowcharts", flowcharts);
 app.use(notFound);
 
 app.listen(process.env.PORT || 3000, () => {
