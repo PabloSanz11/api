@@ -79,7 +79,7 @@ users.get('/:id([0-9]{1,3})', async(req, res, next) => {
 users.get('/:name([A-Za-z]+)', async(req, res, next) => {
     const nombre = req.params.name;
     const pkmn = await db.query("SELECT * FROM users WHERE name LIKE '" + '%' + nombre + '%' + "'");
-
+    console.log('Aquí');
     try {
         if (pkmn.length > 0) {
             return res.status(200).json({ code: 1, message: pkmn });
