@@ -2,7 +2,7 @@ const express = require('express');
 const flowchart = express.Router();
 const db = require('../config/database');
 
-flowchart.post("/", async(req, res, next) => {
+flowchart.put("/", async(req, res, next) => {
     const { email, progress } = req.body;
 
     if (email && progress) {
@@ -19,25 +19,23 @@ flowchart.post("/", async(req, res, next) => {
     return res.status(200).json({ code: 500, message: "Campos incompletos" });
 });
 
-flowchart.get('/', async(req, res, next) => {
+flowchart.post("/email", async(req, res, next) => {
     const { email } = req.body;
 
-    try {
+    if (email) {
+        let query = `SELECT progress FROM users WHERE email = '${email}';`;
+        const pkmn = await db.query(query);
 
-        if (email) {
-            let query = `SELECT progress FROM users WHERE email = '${email}';`;
-            const pkmn = await db.query(query);
+        try {
             if (pkmn.length > 0) {
-                return res.status(200).json({ code: 200, message: pkmn });
+                return res.status(200).json({ code: 1, message: pkmn });
             }
-
+            return res.status(200).send({ code: 404, message: "El Correo no ha sido encontrado" });
+        } catch (error) {
+            console.log(error);
         }
-
-        return res.status(200).send({ code: 404, message: "El Correo no ha sido encontrado" });
-
-    } catch (error) {
-        console.log(error);
     }
+    return res.status(200).json({ code: 500, message: "Campos incompletos" });
 });
 
 module.exports = flowchart;
