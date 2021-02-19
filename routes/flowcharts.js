@@ -21,13 +21,20 @@ flowchart.post("/", async(req, res, next) => {
 
 flowchart.get('/', async(req, res, next) => {
     const { email } = req.body;
-    const pkmn = await db.query(`SELECT progress FROM users WHERE email = '${email}'`);
 
     try {
-        if (pkmn.length > 0) {
-            return res.status(200).json({ code: 1, message: pkmn });
+
+        if (email) {
+            let query = `SELECT progress FROM users WHERE email = '${email}';`;
+            const pkmn = await db.query(query);
+            if (pkmn.length > 0) {
+                return res.status(200).json({ code: 200, message: pkmn });
+            }
+
         }
+
         return res.status(200).send({ code: 404, message: "El Correo no ha sido encontrado" });
+
     } catch (error) {
         console.log(error);
     }
