@@ -20,6 +20,25 @@ users.post("/", async(req, res, next) => {
     return res.status(200).json({ code: 500, message: "Campos incompletos" });
 });
 
+users.post("/email", async(req, res, next) => {
+    const { email } = req.body;
+
+    if (email) {
+        let query = `SELECT progress FROM users WHERE email = '${email}';`;
+        const pkmn = await db.query(query);
+
+        try {
+            if (pkmn.length > 0) {
+                return res.status(200).json({ code: 1, message: pkmn });
+            }
+            return res.status(200).send({ code: 404, message: "El Correo no ha sido encontrado" });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    return res.status(200).json({ code: 500, message: "Campos incompletos" });
+});
+
 users.delete("/:id([0-9]{1,3})", async(req, res, next) => {
     const query = `DELETE FROM users WHERE idUser =${req.params.id}`;
 
