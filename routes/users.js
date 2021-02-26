@@ -24,7 +24,7 @@ users.post("/email", async(req, res, next) => {
     const { email } = req.body;
 
     if (email) {
-        let query = `SELECT progress FROM users WHERE email = '${email}';`;
+        let query = `SELECT name, lastName, progress FROM users WHERE email = '${email}';`;
         const pkmn = await db.query(query);
 
         try {
